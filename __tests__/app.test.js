@@ -20,8 +20,21 @@ beforeEach(() =>
 
 afterAll(() => db.end());
 
-describe("GET api/categories", () => {
+describe("GET /api/categories", () => {
   // an array of catagory objects, each should have a slug and description property
   //something like [{slug: 'something', description: "somthing"}, etc...]
-  test("should ", () => {});
+  test("200: responds with a categories array", () => {
+    return request(app)
+      .get("/api/categories")
+      .expect(200)
+      .then(({ body }) => {
+        const { categories } = body;
+        categories.forEach((category) => {
+          expect(category).toMatchObject({
+            slug: expect.any(String),
+            description: expect.any(String),
+          });
+        });
+      });
+  });
 });
