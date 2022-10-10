@@ -37,4 +37,14 @@ describe("GET /api/categories", () => {
         });
       });
   });
+  test("404: responds when endpoint doesnt exist and/or is spelt wrong", () => {
+    //categories is spelt wrong
+    return request(app)
+      .get("/api/catagories")
+      .expect(404)
+      .then(({ body }) => {
+        const { msg } = body;
+        expect(msg).toBe("Page not found");
+      });
+  });
 });
