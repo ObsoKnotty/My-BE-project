@@ -8,6 +8,7 @@ const {
 const db = require("../db/connection");
 const app = require("../app_connections/app");
 const request = require("supertest");
+const { convertTimestampToDate } = require("../db/seeds/utils");
 
 beforeEach(() =>
   seed({
@@ -45,6 +46,40 @@ describe("GET /api/categories", () => {
       .then(({ body }) => {
         const { msg } = body;
         expect(msg).toBe("Page not found");
+      });
+  });
+});
+
+describe.only("GET /api/reviews/:review_id", () => {
+  /*this should return an object with all the relevent keys:
+    review_id(num), title(str), review_body(str), designer(str), review_img_url(str), votes(num), category(referances the slug)(str), owner(referances a username)(str), created_at(num)
+    */
+  test("200: responds with the given object for the review at specified id", () => {
+    return request(app)
+      .get("/api/reviews/2")
+      .expect(200)
+      .then(({ body }) => {
+        const review = body[0];
+        expect(review).toMatchObject({
+          review_id: expect.any(Number),
+          title: expect.any(String),
+          designer: expect.any(String),
+          owner: expect.any(String),
+          review_img_url: expect.any(String),
+          review_body: expect.any(String),
+          category: expect.any(String),
+          created_at: expect.any(String),
+          votes: expect.any(Number),
+        });
+      });
+  });
+  test("400: responds when review at given id doesnt not exist", () => {
+    return request(app)
+      .get("/api/reviews/200")
+      .expect(400)
+      .then(({ body }) => {
+        const { msg } = body;
+        expect(msg).toBe("Review does not exist");
       });
   });
 });
