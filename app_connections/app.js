@@ -1,12 +1,14 @@
-const { category, review } = require("./controllers/controller-index");
+const { category, review, users } = require("./controllers/controller-index");
 const { getCategories } = category;
 const { getReview } = review;
+const { getUsers } = users;
 //ask if there is a way to make above more neet
 const express = require("express");
 const app = express();
 app.use(express.json());
 app.get("/api/categories", getCategories);
 app.get("/api/reviews/:review_id", getReview);
+app.get("/api/users", getUsers);
 
 //Custom Error
 app.use((err, req, res, next) => {
