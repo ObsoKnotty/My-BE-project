@@ -30,6 +30,8 @@ describe("GET /api/categories", () => {
       .expect(200)
       .then(({ body }) => {
         const { categories } = body;
+        expect(Array.isArray(categories)).toBe(true);
+        expect(categories.length).toBe(4);
         categories.forEach((category) => {
           expect(category).toMatchObject({
             slug: expect.any(String),
@@ -93,7 +95,7 @@ describe("GET /api/reviews/:review_id", () => {
   });
 });
 
-describe.only("GET /api/users", () => {
+describe("GET /api/users", () => {
   test("200: responds with a users array of objects", () => {
     return request(app)
       .get("/api/users")
@@ -101,7 +103,8 @@ describe.only("GET /api/users", () => {
       .then(({ body }) => {
         const { users } = body;
         console.log(body);
-        expect(users).toHaveLength(4);
+        expect(Array.isArray(users)).toBe(true);
+        expect(users.length).toBe(4);
         users.forEach((user) => {
           expect(user).toMatchObject({
             username: expect.any(String),
