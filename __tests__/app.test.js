@@ -30,6 +30,8 @@ describe("GET /api/categories", () => {
       .expect(200)
       .then(({ body }) => {
         const { categories } = body;
+        expect(Array.isArray(categories)).toBe(true);
+        expect(categories.length).toBe(4);
         categories.forEach((category) => {
           expect(category).toMatchObject({
             slug: expect.any(String),
@@ -50,7 +52,7 @@ describe("GET /api/categories", () => {
   });
 });
 
-describe.only("GET /api/reviews/:review_id", () => {
+describe("GET /api/reviews/:review_id", () => {
   /*this should return an object with all the relevent keys:
     review_id(num), title(str), review_body(str), designer(str), review_img_url(str), votes(num), category(referances the slug)(str), owner(referances a username)(str), created_at(num)
     */
@@ -73,13 +75,52 @@ describe.only("GET /api/reviews/:review_id", () => {
         });
       });
   });
-  test("400: responds when review at given id doesnt not exist", () => {
+  test("404: responds when at given id doesnt not exist", () => {
     return request(app)
       .get("/api/reviews/200")
+      .expect(404)
+      .then(({ body }) => {
+        const { msg } = body;
+        expect(msg).toBe("No review found for review_id: 200");
+      });
+  });
+  test("400: responds when at given an invalid Id", () => {
+    return request(app)
+      .get("/api/reviews/banana")
       .expect(400)
       .then(({ body }) => {
         const { msg } = body;
-        expect(msg).toBe("Review does not exist");
+        expect(msg).toBe("Bad Request");
+      });
+  });
+});
+
+describe("GET /api/users", () => {
+  test("200: responds with a users array of objects", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body }) => {
+        const { users } = body;
+        console.log(body);
+        expect(Array.isArray(users)).toBe(true);
+        expect(users.length).toBe(4);
+        users.forEach((user) => {
+          expect(user).toMatchObject({
+            username: expect.any(String),
+            name: expect.any(String),
+            avatar_url: expect.any(String),
+          });
+        });
+      });
+  });
+  test("404: responds when endpoint doesnt exist and/or is spelt wrong", () => {
+    return request(app)
+      .get("/api/sures")
+      .expect(404)
+      .then(({ body }) => {
+        const { msg } = body;
+        expect(msg).toBe("Page not found");
       });
   });
 });
