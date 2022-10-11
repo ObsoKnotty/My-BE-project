@@ -73,13 +73,22 @@ describe.only("GET /api/reviews/:review_id", () => {
         });
       });
   });
-  test("400: responds when review at given id doesnt not exist", () => {
+  test("404: responds when at given id doesnt not exist", () => {
     return request(app)
       .get("/api/reviews/200")
+      .expect(404)
+      .then(({ body }) => {
+        const { msg } = body;
+        expect(msg).toBe("No review found for review_id: 200");
+      });
+  });
+  test("400: responds when at given an invalid Id", () => {
+    return request(app)
+      .get("/api/reviews/banana")
       .expect(400)
       .then(({ body }) => {
         const { msg } = body;
-        expect(msg).toBe("Review does not exist");
+        expect(msg).toBe("Bad Request");
       });
   });
 });

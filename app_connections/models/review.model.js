@@ -5,7 +5,10 @@ exports.fetchReview = (review_id) => {
     .query(`SELECT * FROM reviews WHERE review_id = $1;`, [review_id])
     .then(({ rows }) => {
       if (rows.length === 0) {
-        return Promise.reject({ status: 400, msg: "Review does not exist" });
+        return Promise.reject({
+          status: 404,
+          msg: `No review found for review_id: ${review_id}`,
+        });
       }
       return rows;
     });
