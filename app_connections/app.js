@@ -1,6 +1,6 @@
 const { category, review, users } = require("./controllers/controller-index");
 const { getCategories } = category;
-const { getReview } = review;
+const { getReview, patchReview } = review;
 const { getUsers } = users;
 //ask if there is a way to make above more neet
 const express = require("express");
@@ -9,7 +9,7 @@ app.use(express.json());
 app.get("/api/categories", getCategories);
 app.get("/api/reviews/:review_id", getReview);
 app.get("/api/users", getUsers);
-
+app.patch("/api/reviews/:review_id", patchReview);
 //Custom Error
 app.use((err, req, res, next) => {
   if (err.status && err.msg) {

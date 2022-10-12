@@ -124,3 +124,77 @@ describe("GET /api/users", () => {
       });
   });
 });
+
+describe.only("PATCH /api/reviews/:review_id", () => {
+  /* request contains and Object {inc_votes : ${newVote}}
+  {inc_votes: 2} should increment(positive number) or decrement(negitive number) the votes property at review_id by the newVote value(can just use addidtion becuase of negetive values)
+
+  responce is the updated review ex( review_id: 2, votes: 3){{inc_votes: 2}} => (review_id: 2, votes: 5)
+  */
+  test("201: return with an updated votes key in given review object ", () => {
+    const inc_vote = { inc_vote: 2 };
+    return request(app)
+      .patch("/api/reviews/2")
+      .send(inc_vote)
+      .expect(201)
+      .then(({ body }) => {
+        const { editedReview } = body;
+        expect(body.msg).toBe("Votes on review 2 have changed from 5 to 7");
+        expect(editedReview[0]).toMatchObject({
+          review_id: expect.any(Number),
+          title: expect.any(String),
+          designer: expect.any(String),
+          owner: expect.any(String),
+          review_img_url: expect.any(String),
+          review_body: expect.any(String),
+          category: expect.any(String),
+          created_at: expect.any(String),
+          votes: expect.any(Number),
+        });
+      });
+  });
+  test("404: responds when at given id doesnt not exist", () => {
+    const inc_vote = { inc_vote: 2 };
+    return request(app)
+      .patch("/api/reviews/200")
+      .send(inc_vote)
+      .expect(404)
+      .then(({ body }) => {
+        const { msg } = body;
+        expect(msg).toBe("No review found for review_id: 200");
+      });
+  });
+  test("400: responds when at given an invalid Id", () => {
+    const inc_vote = { inc_vote: 2 };
+    return request(app)
+      .patch("/api/reviews/banana")
+      .send(inc_vote)
+      .expect(400)
+      .then(({ body }) => {
+        const { msg } = body;
+        expect(msg).toBe("Bad Request");
+      });
+  });
+  test("400: responds when at given an invalid value for inc_vote", () => {
+    const inc_vote = { inc_vote: "apple" };
+    return request(app)
+      .patch("/api/reviews/2")
+      .send(inc_vote)
+      .expect(400)
+      .then(({ body }) => {
+        const { msg } = body;
+        expect(msg).toBe("Bad Request");
+      });
+  });
+  test("400: responds when at given an invalid key", () => {
+    const inc_vote = { apple: 2 };
+    return request(app)
+      .patch("/api/reviews/2")
+      .send(inc_vote)
+      .expect(400)
+      .then(({ body }) => {
+        const { msg } = body;
+        expect(msg).toBe("Bad Request");
+      });
+  });
+});
