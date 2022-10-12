@@ -154,8 +154,10 @@ describe.only("PATCH /api/reviews/:review_id", () => {
       });
   });
   test("404: responds when at given id doesnt not exist", () => {
+    const inc_vote = { inc_vote: 2 };
     return request(app)
-      .get("/api/reviews/200")
+      .patch("/api/reviews/200")
+      .send(inc_vote)
       .expect(404)
       .then(({ body }) => {
         const { msg } = body;
@@ -163,8 +165,32 @@ describe.only("PATCH /api/reviews/:review_id", () => {
       });
   });
   test("400: responds when at given an invalid Id", () => {
+    const inc_vote = { inc_vote: 2 };
     return request(app)
-      .get("/api/reviews/banana")
+      .patch("/api/reviews/banana")
+      .send(inc_vote)
+      .expect(400)
+      .then(({ body }) => {
+        const { msg } = body;
+        expect(msg).toBe("Bad Request");
+      });
+  });
+  test("400: responds when at given an invalid value for inc_vote", () => {
+    const inc_vote = { inc_vote: "apple" };
+    return request(app)
+      .patch("/api/reviews/2")
+      .send(inc_vote)
+      .expect(400)
+      .then(({ body }) => {
+        const { msg } = body;
+        expect(msg).toBe("Bad Request");
+      });
+  });
+  test("400: responds when at given an invalid key", () => {
+    const inc_vote = { apple: 2 };
+    return request(app)
+      .patch("/api/reviews/2")
+      .send(inc_vote)
       .expect(400)
       .then(({ body }) => {
         const { msg } = body;
