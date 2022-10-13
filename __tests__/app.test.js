@@ -224,4 +224,28 @@ describe("GET /api/reviews", () => {
         });
       });
   });
+  test("200: responds with a reviews array where the reviews are only of the requested category", () => {
+    return request(app)
+      .get("/api/reviews?category=dexterity")
+      .expect(200)
+      .then(({ body }) => {
+        const { reviews } = body;
+        expect(Array.isArray(reviews)).toBe(true);
+        expect(reviews.length).toBe(1);
+        reviews.forEach((review) => {
+          expect(review).toMatchObject({
+            review_id: expect.any(Number),
+            title: expect.any(String),
+            designer: expect.any(String),
+            owner: expect.any(String),
+            review_img_url: expect.any(String),
+            review_body: expect.any(String),
+            category: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            comment_count: expect.any(Number),
+          });
+        });
+      });
+  });
 });
