@@ -72,6 +72,7 @@ describe("GET /api/reviews/:review_id", () => {
           category: expect.any(String),
           created_at: expect.any(String),
           votes: expect.any(Number),
+          comment_count: expect.any(Number),
         });
       });
   });
@@ -125,7 +126,7 @@ describe("GET /api/users", () => {
   });
 });
 
-describe.only("PATCH /api/reviews/:review_id", () => {
+describe("PATCH /api/reviews/:review_id", () => {
   /* request contains and Object {inc_votes : ${newVote}}
   {inc_votes: 2} should increment(positive number) or decrement(negitive number) the votes property at review_id by the newVote value(can just use addidtion becuase of negetive values)
 
