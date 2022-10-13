@@ -5,11 +5,14 @@ const {
   fetchAllReviews,
 } = require("../models/review.model");
 
-exports.getAllReviews = (req, res) => {
-  fetchAllReviews().then((reviews) => {
-    console.log(reviews);
-    res.status(200).send({ reviews });
-  });
+exports.getAllReviews = (req, res, next) => {
+  fetchAllReviews()
+    .then((reviews) => {
+      res.status(200).send({ reviews });
+    })
+    .catch((err) => {
+      next(err);
+    });
 };
 
 exports.getReview = (req, res, next) => {

@@ -206,7 +206,6 @@ describe("GET /api/reviews", () => {
       .expect(200)
       .then(({ body }) => {
         const { reviews } = body;
-        console.log(reviews);
         expect(Array.isArray(reviews)).toBe(true);
         expect(reviews.length).toBe(13);
         reviews.forEach((review) => {
@@ -223,15 +222,6 @@ describe("GET /api/reviews", () => {
             comment_count: expect.any(Number),
           });
         });
-      });
-  });
-  test("404: responds when endpoint doesnt exist and/or is spelt wrong", () => {
-    return request(app)
-      .get("/api/rviews")
-      .expect(404)
-      .then(({ body }) => {
-        const { msg } = body;
-        expect(msg).toBe("Page not found");
       });
   });
 });
