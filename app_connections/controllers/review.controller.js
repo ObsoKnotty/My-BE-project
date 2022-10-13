@@ -1,5 +1,20 @@
 const { response } = require("../app");
-const { fetchReview, editReview } = require("../models/review.model");
+const {
+  fetchReview,
+  editReview,
+  fetchAllReviews,
+} = require("../models/review.model");
+
+exports.getAllReviews = (req, res, next) => {
+  const category = req.query.category;
+  fetchAllReviews(category)
+    .then((reviews) => {
+      res.status(200).send({ reviews });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
 
 exports.getReview = (req, res, next) => {
   const review_id = req.params.review_id;

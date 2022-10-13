@@ -103,7 +103,6 @@ describe("GET /api/users", () => {
       .expect(200)
       .then(({ body }) => {
         const { users } = body;
-        console.log(body);
         expect(Array.isArray(users)).toBe(true);
         expect(users.length).toBe(4);
         users.forEach((user) => {
@@ -196,6 +195,57 @@ describe("PATCH /api/reviews/:review_id", () => {
       .then(({ body }) => {
         const { msg } = body;
         expect(msg).toBe("Bad Request");
+      });
+  });
+});
+
+describe("GET /api/reviews", () => {
+  test("200: responds with a reviews array", () => {
+    return request(app)
+      .get("/api/reviews")
+      .expect(200)
+      .then(({ body }) => {
+        const { reviews } = body;
+        expect(Array.isArray(reviews)).toBe(true);
+        expect(reviews.length).toBe(13);
+        reviews.forEach((review) => {
+          expect(review).toMatchObject({
+            review_id: expect.any(Number),
+            title: expect.any(String),
+            designer: expect.any(String),
+            owner: expect.any(String),
+            review_img_url: expect.any(String),
+            review_body: expect.any(String),
+            category: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            comment_count: expect.any(Number),
+          });
+        });
+      });
+  });
+  test("200: responds with a reviews array where the reviews are only of the requested category", () => {
+    return request(app)
+      .get("/api/reviews?category=dexterity")
+      .expect(200)
+      .then(({ body }) => {
+        const { reviews } = body;
+        expect(Array.isArray(reviews)).toBe(true);
+        expect(reviews.length).toBe(1);
+        reviews.forEach((review) => {
+          expect(review).toMatchObject({
+            review_id: expect.any(Number),
+            title: expect.any(String),
+            designer: expect.any(String),
+            owner: expect.any(String),
+            review_img_url: expect.any(String),
+            review_body: expect.any(String),
+            category: "dexterity",
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            comment_count: expect.any(Number),
+          });
+        });
       });
   });
 });
