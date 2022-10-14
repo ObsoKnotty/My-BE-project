@@ -7,7 +7,7 @@ const {
 const { getCategories } = category;
 const { getReview, patchReview, getAllReviews } = review;
 const { getUsers } = users;
-const { getComments } = comments;
+const { getComments, postComment } = comments;
 //ask if there is a way to make above more neet
 const express = require("express");
 const app = express();
@@ -18,6 +18,7 @@ app.get("/api/reviews/:review_id", getReview);
 app.get("/api/reviews/:review_id/comments", getComments);
 app.get("/api/users", getUsers);
 app.patch("/api/reviews/:review_id", patchReview);
+app.post("/api/reviews/:review_id/comments", postComment);
 //Custom Error
 app.use((err, req, res, next) => {
   if (err.status && err.msg) {
@@ -38,7 +39,7 @@ app.use((err, req, res, next) => {
 
 // Internal Error
 app.use((err, req, res, next) => {
-  res.status(500).send({ message: "Server Error" });
+  res.status(500).send({ msg: "Server Error" });
 });
 
 // Mispelled path

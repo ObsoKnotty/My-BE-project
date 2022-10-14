@@ -18,3 +18,15 @@ exports.fetchComments = (review_id) => {
       return rows;
     });
 };
+
+exports.addComment = (newComment, review_id) => {
+  const { username, body } = newComment;
+  return db
+    .query(
+      `INSERT INTO comments (author, body, review_id) VALUES ($1, $2, $3) RETURNING *`,
+      [username, body, review_id]
+    )
+    .then(({ rows }) => {
+      return rows;
+    });
+};

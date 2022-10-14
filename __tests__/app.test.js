@@ -305,6 +305,33 @@ describe("GET /api/reviews/:review_id/comments", () => {
 
 describe("POST /api/reviews/:review_id/comments", () => {
   test("201: should accept an object with a username and body keys as properties and return with the posted comment", () => {
-    const newComment = { username: "ObsoKnotty", body: "Best game ever!" };
+    const newComment = { username: "bainesface", body: "Best game ever!" };
+    return request(app)
+      .post("/api/reviews/2/comments")
+      .send(newComment)
+      .expect(201)
+      .then(({ body }) => {
+        const { comment } = body;
+        expect(comment.length).toBe(1);
+        expect(comment[0]).toMatchObject({
+          comment_id: 7,
+          body: "Best game ever!",
+          review_id: 2,
+          author: "bainesface",
+          votes: 0,
+          created_at: expect.any(String),
+        });
+      });
+  });
+  test("500: should respond with server error if username does not exist in the system", () => {
+    const newComment = { username: "O", body: "Best game ever!" };
+    return request(app)
+      .post("/api/reviews/2/comments")
+      .send(newComment)
+      .expect(500)
+      .then(({ body }) => {
+        const { msg } = body;
+        expect(msg).toBe("Server Error");
+      });
   });
 });
