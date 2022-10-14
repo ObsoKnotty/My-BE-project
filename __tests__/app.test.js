@@ -249,3 +249,56 @@ describe("GET /api/reviews", () => {
       });
   });
 });
+
+describe("GET /api/reviews/:review_id/comments", () => {
+  test("200 return  an array of comments for the given review id", () => {
+    return request(app)
+      .get("/api/reviews/2/comments")
+      .expect(200)
+      .then(({ body }) => {
+        const { comments } = body;
+        const date1 = new Date(comments[0].created_at).getTime();
+        const date2 = new Date(comments[1].created_at).getTime();
+        expect(date1 > date2).toBe(true);
+        expect(Array.isArray(comments)).toBe(true);
+        expect(comments.length).toBe(3);
+        comments.forEach((comment) => {
+          expect(comment).toMatchObject({
+            comment_id: expect.any(Number),
+            body: expect.any(String),
+            review_id: 2,
+            author: expect.any(String),
+            votes: expect.any(Number),
+            created_at: expect.any(String),
+          });
+        });
+      });
+  });
+  test("404: responds when at given id doesnt not exist", () => {
+    return request(app)
+      .get("/api/reviews/200/comments")
+      .expect(404)
+      .then(({ body }) => {
+        const { msg } = body;
+        expect(msg).toBe("No comments found for review_id: 200");
+      });
+  });
+  test("400: responds when at given an invalid Id", () => {
+    return request(app)
+      .get("/api/reviews/banana/comments")
+      .expect(400)
+      .then(({ body }) => {
+        const { msg } = body;
+        expect(msg).toBe("Bad Request");
+      });
+  });
+  test("404: responds when given endpoint doesnt not exist", () => {
+    return request(app)
+      .get("/api/reviews/2/commens")
+      .expect(404)
+      .then(({ body }) => {
+        const { msg } = body;
+        expect(msg).toBe("Page not found");
+      });
+  });
+});
