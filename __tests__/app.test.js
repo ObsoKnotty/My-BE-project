@@ -303,7 +303,7 @@ describe("GET /api/reviews/:review_id/comments", () => {
   });
 });
 
-describe.only("POST /api/reviews/:review_id/comments", () => {
+describe("POST /api/reviews/:review_id/comments", () => {
   test("201: should accept an object with a username and body keys as properties and return with the posted comment", () => {
     const newComment = { username: "bainesface", body: "Best game ever!" };
     return request(app)
@@ -323,7 +323,7 @@ describe.only("POST /api/reviews/:review_id/comments", () => {
         });
       });
   });
-  test("500: should respond with server error if username does not exist in the system", () => {
+  test("400: should respond with server error if username does not exist in the system", () => {
     const newComment = { username: "O", body: "Best game ever!" };
     return request(app)
       .post("/api/reviews/2/comments")
