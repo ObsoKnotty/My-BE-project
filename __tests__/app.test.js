@@ -7,6 +7,7 @@ const {
 } = require("../db/data/test-data");
 const db = require("../db/connection");
 const app = require("../app_connections/app");
+const endpointsTest = require("../endpoints.json");
 const request = require("supertest");
 
 beforeEach(() =>
@@ -382,7 +383,7 @@ describe("POST /api/reviews/:review_id/comments", () => {
   });
 });
 
-describe.only("DELETE /api/comments/:comment_id", () => {
+describe("DELETE /api/comments/:comment_id", () => {
   test("204: No content status", () => {
     return request(app)
       .delete("/api/comments/4")
@@ -399,6 +400,18 @@ describe.only("DELETE /api/comments/:comment_id", () => {
       .then(({ body }) => {
         const { msg } = body;
         expect(msg).toBe(`No comment with id 45 found for deletion`);
+      });
+  });
+});
+
+describe.only("GET /api", () => {
+  test("200: responds with a json of available endpoints", () => {
+    return request(app)
+      .get("/api")
+      .expect(200)
+      .then(({ body }) => {
+        const { endpoints } = body;
+        expect(endpoints).toEqual(endpointsTest);
       });
   });
 });

@@ -3,14 +3,20 @@ const {
   review,
   users,
   comments,
+  api,
 } = require("./controllers/controller-index");
+
+const { getApi } = api;
 const { getCategories } = category;
 const { getReview, patchReview, getAllReviews } = review;
 const { getUsers } = users;
 const { getComments, postComment, deleteComment } = comments;
+
 const express = require("express");
 const app = express();
 app.use(express.json());
+
+app.get("/api", getApi);
 app.get("/api/reviews", getAllReviews);
 app.get("/api/categories", getCategories);
 app.get("/api/reviews/:review_id", getReview);
@@ -19,6 +25,7 @@ app.get("/api/users", getUsers);
 app.patch("/api/reviews/:review_id", patchReview);
 app.post("/api/reviews/:review_id/comments", postComment);
 app.delete("/api/comments/:comment_id", deleteComment);
+
 //Custom Error
 app.use((err, req, res, next) => {
   if (err.status && err.msg) {

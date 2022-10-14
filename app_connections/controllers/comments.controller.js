@@ -1,4 +1,3 @@
-const { response } = require("../app");
 const {
   fetchComments,
   addComment,
