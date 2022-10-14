@@ -5,12 +5,13 @@ const {
 } = require("../models/review.model");
 
 exports.getAllReviews = (req, res, next) => {
-  const category = req.query.category;
-  fetchAllReviews(category)
+  const { sort_by, order, category } = req.query;
+  fetchAllReviews(category, sort_by, order)
     .then((reviews) => {
       res.status(200).send({ reviews });
     })
     .catch((err) => {
+      console.log(err);
       next(err);
     });
 };

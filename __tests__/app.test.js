@@ -199,7 +199,7 @@ describe("PATCH /api/reviews/:review_id", () => {
   });
 });
 
-describe("GET /api/reviews", () => {
+describe.only("GET /api/reviews", () => {
   test("200: responds with a reviews array", () => {
     return request(app)
       .get("/api/reviews")

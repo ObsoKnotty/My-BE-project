@@ -1,21 +1,46 @@
 const db = require("../../db/connection");
 
-exports.fetchAllReviews = (category) => {
+exports.fetchAllReviews = (
+  category,
+  sort_by = "created_at",
+  order = "DESC"
+) => {
   const queryValue = [];
+  const tester = order.toUpperCase();
+  const validOrderList = ["ASC", "DESC"];
+  const validSortList = [
+    "review_id",
+    "title",
+    "designer",
+    "owner",
+    "review_img_url",
+    "review_body",
+    "category",
+    "created_at",
+    "votes",
+    "comment_count",
+  ];
+  if (!validSortList.includes(sort_by) || !validOrderList.includes(tester)) {
+    return Promise.reject({ status: 400, msg: "invalid value given" });
+  }
   let queryStr = `SELECT reviews.*, COUNT(comments.review_id) ::INT AS comment_count 
   FROM reviews 
   LEFT JOIN comments ON comments.review_id = reviews.review_id `;
   const queryWhere = `WHERE reviews.category = $1 `;
-  const queryGroup = `GROUP BY reviews.review_id;`;
+  const queryOrder = `ORDER BY ${sort_by} ${order};`;
+  const queryGroup = `GROUP BY reviews.review_id `;
 
   if (category === undefined) {
-    queryValue.push((queryStr += queryGroup));
+    queryStr += queryGroup;
+    queryValue.push((queryStr += queryOrder));
     return db.query(queryValue[0]).then(({ rows }) => {
       return rows;
     });
   } else {
     queryStr += queryWhere;
-    queryValue.push((queryStr += queryGroup));
+    queryStr += queryGroup;
+    queryValue.push((queryStr += queryOrder));
+    console.log(queryValue[0]);
     return db.query(queryValue[0], [category]).then(({ rows }) => {
       if (rows.length === 0) {
         return Promise.reject({
