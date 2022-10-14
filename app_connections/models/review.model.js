@@ -40,7 +40,6 @@ exports.fetchAllReviews = (
     queryStr += queryWhere;
     queryStr += queryGroup;
     queryValue.push((queryStr += queryOrder));
-    console.log(queryValue[0]);
     return db.query(queryValue[0], [category]).then(({ rows }) => {
       if (rows.length === 0) {
         return Promise.reject({

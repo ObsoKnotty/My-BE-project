@@ -8,7 +8,6 @@ const {
 const db = require("../db/connection");
 const app = require("../app_connections/app");
 const request = require("supertest");
-const { convertTimestampToDate } = require("../db/seeds/utils");
 
 beforeEach(() =>
   seed({
@@ -199,7 +198,7 @@ describe("PATCH /api/reviews/:review_id", () => {
   });
 });
 
-describe.only("GET /api/reviews", () => {
+describe("GET /api/reviews", () => {
   test("200: responds with a reviews array", () => {
     return request(app)
       .get("/api/reviews")
@@ -247,6 +246,53 @@ describe.only("GET /api/reviews", () => {
           });
         });
       });
+  });
+  describe("GET /api/reviews?(sort_by or order)=$query", () => {
+    test("user should be able to request the order by which the result is sorted ", () => {
+      return request(app)
+        .get("/api/reviews?sort_by=owner")
+        .expect(200)
+        .then(({ body }) => {
+          const { reviews } = body;
+          expect(reviews).toBeSortedBy("owner", { descending: true });
+        });
+    });
+    test("user should be able to request the order by which the result is sorted ", () => {
+      return request(app)
+        .get("/api/reviews?sort_by=title")
+        .expect(200)
+        .then(({ body }) => {
+          const { reviews } = body;
+          expect(reviews).toBeSortedBy("title", { descending: true });
+        });
+    });
+    test("400: invalid sort_by query value", () => {
+      return request(app)
+        .get("/api/reviews?sort_by=banana")
+        .expect(400)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toBe("invalid value given");
+        });
+    });
+    test("user needs to be able to query for descending", () => {
+      return request(app)
+        .get("/api/reviews?order=asc")
+        .expect(200)
+        .then(({ body }) => {
+          const { reviews } = body;
+          expect(reviews).toBeSortedBy("created_at", { ascending: true });
+        });
+    });
+    test("400: invalid order query value", () => {
+      return request(app)
+        .get("/api/reviews?order=banana")
+        .expect(400)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toBe("invalid value given");
+        });
+    });
   });
 });
 
