@@ -302,3 +302,9 @@ describe("GET /api/reviews/:review_id/comments", () => {
       });
   });
 });
+
+describe("POST /api/reviews/:review_id/comments", () => {
+  test("201: should accept an object with a username and body keys as properties and return with the posted comment", () => {
+    const newComment = { username: "ObsoKnotty", body: "Best game ever!" };
+  });
+});
