@@ -381,3 +381,24 @@ describe("POST /api/reviews/:review_id/comments", () => {
       });
   });
 });
+
+describe.only("DELETE /api/comments/:comment_id", () => {
+  test("204: No content status", () => {
+    return request(app)
+      .delete("/api/comments/4")
+      .expect(204)
+      .then((body) => {
+        const { statusMessage } = body.res;
+        expect(statusMessage).toBe("No Content");
+      });
+  });
+  test("404: when no comment found", () => {
+    return request(app)
+      .delete("/api/comments/45")
+      .expect(404)
+      .then(({ body }) => {
+        const { msg } = body;
+        expect(msg).toBe(`No comment with id 45 found for deletion`);
+      });
+  });
+});
