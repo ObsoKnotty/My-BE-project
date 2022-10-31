@@ -6,6 +6,8 @@ const {
   api,
 } = require("./controllers/controller-index");
 
+const cors = require("cors");
+
 const { getApi } = api;
 const { getCategories } = category;
 const { getReview, patchReview, getAllReviews } = review;
@@ -15,6 +17,7 @@ const { getComments, postComment, deleteComment } = comments;
 const express = require("express");
 const app = express();
 app.use(express.json());
+app.use(cors());
 
 app.get("/api", getApi);
 app.get("/api/reviews", getAllReviews);
